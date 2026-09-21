@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { CATEGORIES, CURRENCIES, FEATURES, MANUFACTURERS, VAT_RATES } from '../data/options'
-import type { Feature } from '../types'
+import type { Feature, Product } from '../types'
 import { AMOUNT_PATTERN, parseAmount } from './pricing'
 
 export const basicInfoSchema = z.object({
@@ -103,6 +103,28 @@ export const availabilitySchema = z
   )
   // The stock only matters for limited products.
   .transform(({ stock, ...rest }) => ({ ...rest, stock: rest.isLimited ? Number(stock) : null }))
+
+export const productFormSchema = z.object({
+  basicInfo: basicInfoSchema,
+  pricing: pricingSchema,
+  availability: availabilitySchema,
+})
+
+export function toProduct({
+  basicInfo,
+  pricing,
+  availability,
+}: z.output<typeof productFormSchema>): Product {
+  return {
+    id: crypto.randomUUID(),
+    ...basicInfo,
+    ...pricing,
+    isAvailable: availability.isAvailable,
+    stock: availability.stock,
+    minCartQuantity: availability.minQuantity,
+    maxCartQuantity: availability.maxQuantity,
+  }
+}
 
 /**
  * Raw form state. Each step is a nested group validated by its own schema,

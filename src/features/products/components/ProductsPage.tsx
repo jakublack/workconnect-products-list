@@ -2,14 +2,19 @@ import { useState } from 'react'
 import { formatProductCount } from '@/lib/format'
 import { AddProductDialog } from '../add-product/AddProductDialog'
 import { MOCK_PRODUCTS } from '../data/mock-products'
+import type { Product } from '../types'
 import { usePagination } from '../hooks/use-pagination'
 import { ProductCardList } from './ProductCardList'
 import { ProductsPagination } from './ProductsPagination'
 import { ProductsTable } from './ProductsTable'
 
 export function ProductsPage() {
-  const [products] = useState(MOCK_PRODUCTS)
+  const [products, setProducts] = useState(MOCK_PRODUCTS)
   const { page, pageCount, pageItems, setPage } = usePagination(products)
+
+  const handleProductAdd = (product: Product) => {
+    setProducts((current) => [...current, product])
+  }
 
   return (
     <main className="mx-auto flex w-full max-w-[1272px] flex-col gap-4 px-4 py-6 md:gap-6 md:py-12">
@@ -20,7 +25,7 @@ export function ProductsPage() {
             {formatProductCount(products.length)} w katalogu
           </p>
         </div>
-        <AddProductDialog />
+        <AddProductDialog onProductAdd={handleProductAdd} />
       </header>
 
       {/* Cards on mobile, a table card from `md` up. */}

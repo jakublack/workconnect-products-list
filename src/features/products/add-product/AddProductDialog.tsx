@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ArrowLeftIcon, ArrowRightIcon, PlusIcon, XIcon } from 'lucide-react'
+import { toast } from 'sonner'
 import { useAppForm } from '@/components/form/app-form'
 import { Button } from '@/components/ui/button'
 import {
@@ -12,7 +13,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import type { Product } from '../types'
 import { addProductFormOptions, STEP_FORM_ID } from './form-options'
+import { productFormSchema, toProduct } from './schema'
 import { Stepper } from './Stepper'
 import { AvailabilityStep } from './steps/AvailabilityStep'
 import { BasicInfoStep } from './steps/BasicInfoStep'
@@ -26,10 +29,22 @@ const STEPS = [
 
 const LAST_STEP = STEPS.length - 1
 
-export function AddProductDialog() {
+interface AddProductDialogProps {
+  onProductAdd: (product: Product) => void
+}
+
+export function AddProductDialog({ onProductAdd }: AddProductDialogProps) {
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState(0)
-  const form = useAppForm(addProductFormOptions)
+  const form = useAppForm({
+    ...addProductFormOptions,
+    onSubmit: ({ value }) => {
+      // Every step was validated on "Dalej"; parsing the whole form also converts it to output types.
+      onProductAdd(toProduct(productFormSchema.parse(value)))
+      setOpen(false)
+      toast.success('Produkt został dodany')
+    },
+  })
 
   const goToNextStep = () => setStep((current) => Math.min(current + 1, LAST_STEP))
 
