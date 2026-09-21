@@ -27,12 +27,14 @@ export function ProductsPagination({
   const hasPrevious = page > 1
   const hasNext = page < pageCount
 
-  // Links keep a real `href` (open in new tab works), but navigation stays client-side.
+  // Links keep a real `href`, so Cmd/Ctrl/Shift+click still opens the page in a new tab/window;
+  // a plain click changes the page client-side.
   const linkProps = (target: number, enabled = true) => ({
     href: enabled ? `?page=${target}` : undefined,
     'aria-disabled': !enabled || undefined,
     className: cn(!enabled && 'pointer-events-none text-muted-foreground'),
     onClick: (event: MouseEvent<HTMLAnchorElement>) => {
+      if (enabled && (event.metaKey || event.ctrlKey || event.shiftKey)) return
       event.preventDefault()
       if (enabled) onPageChange(target)
     },
