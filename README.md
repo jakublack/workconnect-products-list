@@ -2,6 +2,8 @@
 
 WorkConnect recruitment task (Frontend, React). A products page with a table and a three-step "Dodaj produkt" form in a dialog, built after the Figma design (desktop and mobile). The UI is in Polish, as in the design.
 
+**Live demo:** https://splendid-sunburst-1e362c.netlify.app
+
 ## Stack
 
 | Area           | Technology                                                    |
@@ -59,7 +61,7 @@ The app runs at http://localhost:5173.
 
 - Changing the net price recalculates the gross price and vice versa: `gross = net × (1 + VAT / 100)`.
 - Changing the VAT rate recalculates whichever price the user did not edit last.
-- Calculations run on integer grosze (cents) and are rounded to 2 decimals. Both a comma and a dot are accepted as the decimal separator.
+- Calculations run on integer grosze (cents) and are rounded to 2 decimals. Both a comma and a dot are accepted as the decimal separator, and spaces as thousands separators (`1 299,99`).
 
 ## Validation
 
@@ -106,7 +108,7 @@ src/
 - **Selected product features** are highlighted with the primary color. The design doesn't show a selected state.
 - **Cart limits ≥ 1.** The spec only asks for integers, but a cart limit of 0 wouldn't make sense.
 - **Inputs use a 16 px font on mobile**, while the design uses 14 px. This is shadcn/ui's default, and it stops iOS from zooming in when a field is focused. From 768 px up the font is 14 px, as in the design.
-- **The form is lazy-loaded** (`React.lazy`) when the dialog opens, which keeps the main JS bundle smaller.
+- **The form is lazy-loaded** (`React.lazy`) when the dialog opens, which keeps the main JS bundle smaller. If the chunk fails to load (offline, or a newer deploy), the dialog shows a reload prompt instead of breaking the page.
 
 ## Tests
 
