@@ -1,9 +1,7 @@
+import { ProductsPage } from '@/features/products/components/ProductsPage'
+
 function App() {
-  return (
-    <main>
-      <h1>Produkty</h1>
-    </main>
-  )
+  return <ProductsPage />
 }
 
 export default App
