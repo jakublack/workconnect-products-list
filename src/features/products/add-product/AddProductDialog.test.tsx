@@ -13,8 +13,11 @@ function setup() {
 const currentStep = () =>
   within(screen.getByRole('dialog')).getByRole('listitem', { current: 'step' })
 
-const openDialog = (user: UserEvent) =>
-  user.click(screen.getByRole('button', { name: 'Dodaj produkt' }))
+async function openDialog(user: UserEvent) {
+  await user.click(screen.getByRole('button', { name: 'Dodaj produkt' }))
+  // The form is lazy-loaded when the dialog opens.
+  await screen.findByLabelText('Nazwa produktu')
+}
 
 const clickNext = (user: UserEvent) => user.click(screen.getByRole('button', { name: 'Dalej' }))
 

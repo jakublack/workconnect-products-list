@@ -14,7 +14,8 @@ interface StepperProps {
 
 export function Stepper({ steps, currentStep, className }: StepperProps) {
   return (
-    <ol className={cn('flex items-center gap-4', className)}>
+    // Phones: three columns with the circle above the labels; from `sm`: one row with connectors.
+    <ol className={cn('grid grid-cols-3 gap-4 sm:flex sm:items-center', className)}>
       {steps.map((step, index) => {
         const isCompleted = index < currentStep
         const isUpcoming = index > currentStep
@@ -28,10 +29,13 @@ export function Stepper({ steps, currentStep, className }: StepperProps) {
             {index > 0 && (
               <span
                 aria-hidden
-                className={cn('h-px w-17 shrink', isUpcoming ? 'bg-border' : 'bg-primary')}
+                className={cn(
+                  'hidden h-px w-17 shrink sm:block',
+                  isUpcoming ? 'bg-border' : 'bg-primary',
+                )}
               />
             )}
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
               <span
                 className={cn(
                   'flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold',

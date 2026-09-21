@@ -1,33 +1,21 @@
-import { useState } from 'react'
-import { ArrowLeftIcon, ArrowRightIcon, PlusIcon, XIcon } from 'lucide-react'
-import { toast } from 'sonner'
-import { useAppForm } from '@/components/form/app-form'
+import { lazy, Suspense, useState } from 'react'
+import { Loader2Icon, PlusIcon, XIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
 import type { Product } from '../types'
-import { addProductFormOptions, STEP_FORM_ID } from './form-options'
-import { productFormSchema, toProduct } from './schema'
-import { Stepper } from './Stepper'
-import { AvailabilityStep } from './steps/AvailabilityStep'
-import { BasicInfoStep } from './steps/BasicInfoStep'
-import { PricingStep } from './steps/PricingStep'
 
-const STEPS = [
-  { title: 'Informacje', description: 'Dane podstawowe' },
-  { title: 'Cena', description: 'Dane cenowe' },
-  { title: 'Dostępność', description: 'Stany magazynowe' },
-] as const
-
-const LAST_STEP = STEPS.length - 1
+// The form (TanStack Form, Zod, form controls) is only needed once the dialog opens.
+const AddProductForm = lazy(() =>
+  import('./AddProductForm').then((module) => ({ default: module.AddProductForm })),
+)
 
 interface AddProductDialogProps {
   onProductAdd: (product: Product) => void
@@ -35,23 +23,6 @@ interface AddProductDialogProps {
 
 export function AddProductDialog({ onProductAdd }: AddProductDialogProps) {
   const [open, setOpen] = useState(false)
-  const [step, setStep] = useState(0)
-  const form = useAppForm({
-    ...addProductFormOptions,
-    onSubmit: ({ value }) => {
-      // Every step was validated on "Dalej"; parsing the whole form also converts it to output types.
-      onProductAdd(toProduct(productFormSchema.parse(value)))
-      setOpen(false)
-      toast.success('Produkt został dodany')
-    },
-  })
-
-  const goToNextStep = () => setStep((current) => Math.min(current + 1, LAST_STEP))
-
-  const resetDialog = () => {
-    form.reset()
-    setStep(0)
-  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -63,11 +34,13 @@ export function AddProductDialog({ onProductAdd }: AddProductDialogProps) {
       </DialogTrigger>
       <DialogContent
         showCloseButton={false}
-        className="gap-0 p-0 sm:max-w-[720px]"
-        // Runs after the close animation, so the dialog doesn't flash step 1 while fading out.
-        onCloseAutoFocus={resetDialog}
+        className={
+          'flex flex-col gap-0 p-0 sm:max-h-[calc(100dvh-2rem)] sm:max-w-[720px] ' +
+          // Full screen on phones.
+          'max-sm:inset-0 max-sm:max-w-none max-sm:translate-none max-sm:rounded-none max-sm:ring-0'
+        }
       >
-        <DialogHeader className="flex-row items-center justify-between border-b px-4 py-6">
+        <DialogHeader className="flex-row items-center justify-between border-b px-4 py-6 max-sm:mx-4 max-sm:px-0 max-sm:pb-4">
           <DialogTitle>Dodaj nowy produkt</DialogTitle>
           <DialogDescription className="sr-only">
             Uzupełnij dane produktu w trzech krokach.
@@ -80,32 +53,15 @@ export function AddProductDialog({ onProductAdd }: AddProductDialogProps) {
           </DialogClose>
         </DialogHeader>
 
-        <Stepper steps={STEPS} currentStep={step} className="border-b px-4 py-3" />
-
-        <div className="px-4 py-5">
-          {step === 0 && <BasicInfoStep form={form} onNext={goToNextStep} />}
-          {step === 1 && <PricingStep form={form} onNext={goToNextStep} />}
-          {step === 2 && <AvailabilityStep form={form} onSubmit={() => form.handleSubmit()} />}
-        </div>
-
-        <DialogFooter className="mx-0 mb-0 flex-row">
-          {step > 0 && (
-            <Button variant="outline" size="lg" onClick={() => setStep(step - 1)}>
-              <ArrowLeftIcon />
-              Wstecz
-            </Button>
-          )}
-          {step < LAST_STEP ? (
-            <Button type="submit" form={STEP_FORM_ID} size="lg" className="ml-auto">
-              Dalej
-              <ArrowRightIcon />
-            </Button>
-          ) : (
-            <Button type="submit" form={STEP_FORM_ID} size="lg" className="ml-auto">
-              Zapisz produkt
-            </Button>
-          )}
-        </DialogFooter>
+        <Suspense
+          fallback={
+            <div className="flex h-72 items-center justify-center text-muted-foreground">
+              <Loader2Icon className="size-5 animate-spin" aria-label="Ładowanie formularza" />
+            </div>
+          }
+        >
+          <AddProductForm onProductAdd={onProductAdd} onClose={() => setOpen(false)} />
+        </Suspense>
       </DialogContent>
     </Dialog>
   )
