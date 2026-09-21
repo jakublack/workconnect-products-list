@@ -51,6 +51,25 @@ describe('AddProductDialog', () => {
     await waitFor(() => expect(screen.getByLabelText('Nazwa produktu')).toHaveFocus())
   })
 
+  it('links each error message to its field for screen readers', async () => {
+    const { user } = setup()
+    await openDialog(user)
+
+    await clickNext(user)
+
+    expect(screen.getByLabelText('Nazwa produktu')).toHaveAccessibleDescription(
+      'Podaj nazwę produktu',
+    )
+    expect(screen.getByRole('combobox', { name: 'Producent' })).toHaveAccessibleDescription(
+      'Wybierz producenta',
+    )
+    expect(screen.getByRole('toolbar', { name: 'Cechy produktu' })).toHaveAccessibleDescription(
+      'Wybierz co najmniej jedną cechę',
+    )
+    // Valid fields have no description.
+    expect(screen.getByLabelText('Opis')).not.toHaveAccessibleDescription()
+  })
+
   it('shows a field error only after leaving the field', async () => {
     const { user } = setup()
     await openDialog(user)

@@ -9,7 +9,7 @@ interface CheckboxFieldProps {
 
 export function CheckboxField({ label, className }: CheckboxFieldProps) {
   const field = useFieldContext<boolean>()
-  const { isInvalid, errors } = useFieldErrorState()
+  const { isInvalid, errors, errorId, describedBy } = useFieldErrorState()
 
   return (
     <Field orientation="horizontal" data-invalid={isInvalid} className={className}>
@@ -20,9 +20,10 @@ export function CheckboxField({ label, className }: CheckboxFieldProps) {
         onCheckedChange={(checked) => field.handleChange(checked === true)}
         onBlur={field.handleBlur}
         aria-invalid={isInvalid}
+        aria-describedby={describedBy}
       />
       <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
-      <FieldError errors={errors} />
+      <FieldError id={errorId} errors={errors} />
     </Field>
   )
 }

@@ -9,7 +9,7 @@ interface TextFieldProps extends Omit<ComponentProps<typeof Input>, 'value' | 'o
 
 export function TextField({ label, className, ...inputProps }: TextFieldProps) {
   const field = useFieldContext<string>()
-  const { isInvalid, errors } = useFieldErrorState()
+  const { isInvalid, errors, errorId, describedBy } = useFieldErrorState()
 
   return (
     <Field data-invalid={isInvalid} className={className}>
@@ -21,9 +21,10 @@ export function TextField({ label, className, ...inputProps }: TextFieldProps) {
         onChange={(event) => field.handleChange(event.target.value)}
         onBlur={field.handleBlur}
         aria-invalid={isInvalid}
+        aria-describedby={describedBy}
         {...inputProps}
       />
-      <FieldError errors={errors} />
+      <FieldError id={errorId} errors={errors} />
     </Field>
   )
 }

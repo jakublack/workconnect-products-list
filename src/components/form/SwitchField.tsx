@@ -9,7 +9,7 @@ interface SwitchFieldProps {
 
 export function SwitchField({ label, className }: SwitchFieldProps) {
   const field = useFieldContext<boolean>()
-  const { isInvalid, errors } = useFieldErrorState()
+  const { isInvalid, errors, errorId, describedBy } = useFieldErrorState()
 
   return (
     <Field orientation="horizontal" data-invalid={isInvalid} className={className}>
@@ -20,9 +20,10 @@ export function SwitchField({ label, className }: SwitchFieldProps) {
         onCheckedChange={field.handleChange}
         onBlur={field.handleBlur}
         aria-invalid={isInvalid}
+        aria-describedby={describedBy}
       />
       <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
-      <FieldError errors={errors} />
+      <FieldError id={errorId} errors={errors} />
     </Field>
   )
 }

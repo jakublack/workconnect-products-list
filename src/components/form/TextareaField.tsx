@@ -9,7 +9,7 @@ interface TextareaFieldProps extends Omit<ComponentProps<typeof Textarea>, 'valu
 
 export function TextareaField({ label, className, ...textareaProps }: TextareaFieldProps) {
   const field = useFieldContext<string>()
-  const { isInvalid, errors } = useFieldErrorState()
+  const { isInvalid, errors, errorId, describedBy } = useFieldErrorState()
 
   return (
     <Field data-invalid={isInvalid} className={className}>
@@ -21,9 +21,10 @@ export function TextareaField({ label, className, ...textareaProps }: TextareaFi
         onChange={(event) => field.handleChange(event.target.value)}
         onBlur={field.handleBlur}
         aria-invalid={isInvalid}
+        aria-describedby={describedBy}
         {...textareaProps}
       />
-      <FieldError errors={errors} />
+      <FieldError id={errorId} errors={errors} />
     </Field>
   )
 }

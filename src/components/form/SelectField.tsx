@@ -24,7 +24,7 @@ export function SelectField({
   className,
 }: SelectFieldProps) {
   const field = useFieldContext<string>()
-  const { isInvalid, errors } = useFieldErrorState()
+  const { isInvalid, errors, errorId, describedBy } = useFieldErrorState()
 
   return (
     <Field data-invalid={isInvalid} className={className}>
@@ -36,7 +36,12 @@ export function SelectField({
         // The trigger loses focus to the popup, so treat closing the popup as "blur".
         onOpenChange={(open) => !open && field.handleBlur()}
       >
-        <SelectTrigger id={field.name} aria-invalid={isInvalid} className="w-full">
+        <SelectTrigger
+          id={field.name}
+          aria-invalid={isInvalid}
+          aria-describedby={describedBy}
+          className="w-full"
+        >
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
@@ -47,7 +52,7 @@ export function SelectField({
           ))}
         </SelectContent>
       </Select>
-      <FieldError errors={errors} />
+      <FieldError id={errorId} errors={errors} />
     </Field>
   )
 }

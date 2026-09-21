@@ -11,7 +11,7 @@ interface ToggleChipsFieldProps {
 /** Multi-select rendered as a row of toggleable chips. */
 export function ToggleChipsField({ label, options, className }: ToggleChipsFieldProps) {
   const field = useFieldContext<string[]>()
-  const { isInvalid, errors } = useFieldErrorState()
+  const { isInvalid, errors, errorId, describedBy } = useFieldErrorState()
   const labelId = `${field.name}-label`
 
   return (
@@ -27,6 +27,7 @@ export function ToggleChipsField({ label, options, className }: ToggleChipsField
           field.handleBlur()
         }}
         aria-labelledby={labelId}
+        aria-describedby={describedBy}
         aria-invalid={isInvalid}
         className="flex-wrap"
       >
@@ -41,7 +42,7 @@ export function ToggleChipsField({ label, options, className }: ToggleChipsField
           </ToggleGroupItem>
         ))}
       </ToggleGroup>
-      <FieldError errors={errors} />
+      <FieldError id={errorId} errors={errors} />
     </Field>
   )
 }
