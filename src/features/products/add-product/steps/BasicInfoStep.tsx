@@ -11,11 +11,11 @@ export const BasicInfoStep = withForm({
     return (
       <form.FormGroup
         name="basicInfo"
-        validators={{ onDynamic: basicInfoSchema }}
+        validators={{ onChange: basicInfoSchema }}
         onGroupSubmit={onNext}
       >
         {(group) => (
-          <StepForm onSubmit={group.handleSubmit}>
+          <StepForm group={group}>
             <div className="grid gap-4 sm:grid-cols-2">
               <form.AppField name="basicInfo.name">
                 {(field) => (

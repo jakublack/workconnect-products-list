@@ -51,6 +51,47 @@ describe('AddProductDialog', () => {
     await waitFor(() => expect(screen.getByLabelText('Nazwa produktu')).toHaveFocus())
   })
 
+  it('shows a field error only after leaving the field', async () => {
+    const { user } = setup()
+    await openDialog(user)
+    const name = screen.getByLabelText('Nazwa produktu')
+
+    await user.type(name, 'ab')
+    expect(screen.queryByText('Nazwa musi mieć co najmniej 3 znaki')).not.toBeInTheDocument()
+
+    await user.tab()
+    expect(screen.getByText('Nazwa musi mieć co najmniej 3 znaki')).toBeInTheDocument()
+    expect(name).toHaveAttribute('aria-invalid', 'true')
+
+    // Once shown, the error goes away as soon as the value is fixed.
+    await user.type(name, 'c')
+    expect(screen.queryByText('Nazwa musi mieć co najmniej 3 znaki')).not.toBeInTheDocument()
+  })
+
+  it('shows a required error when an empty field is left', async () => {
+    const { user } = setup()
+    await openDialog(user)
+
+    await user.click(screen.getByLabelText('Nazwa produktu'))
+    await user.tab()
+
+    expect(screen.getByText('Podaj nazwę produktu')).toBeInTheDocument()
+    expect(screen.queryByText('Podaj SKU produktu')).not.toBeInTheDocument()
+  })
+
+  it('does not flag a field the user has only started typing into', async () => {
+    const { user } = setup()
+    await openDialog(user)
+    await user.type(screen.getByLabelText('Nazwa produktu'), 'Dell XPS 13')
+
+    // Moving to SKU blurs the name field, which validates the whole step.
+    await user.type(screen.getByLabelText('SKU produktu'), 'D-')
+
+    expect(screen.getByLabelText('SKU produktu')).not.toHaveAttribute('aria-invalid', 'true')
+    expect(screen.queryByText('Podaj SKU produktu')).not.toBeInTheDocument()
+    expect(screen.queryByText('SKU może zawierać tylko litery i cyfry')).not.toBeInTheDocument()
+  })
+
   it('re-validates a field as the user types once the step was submitted', async () => {
     const { user } = setup()
     await openDialog(user)

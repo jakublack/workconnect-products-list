@@ -12,11 +12,11 @@ export const AvailabilityStep = withForm({
     return (
       <form.FormGroup
         name="availability"
-        validators={{ onDynamic: availabilitySchema }}
+        validators={{ onChange: availabilitySchema }}
         onGroupSubmit={onSubmit}
       >
         {(group) => (
-          <StepForm onSubmit={group.handleSubmit}>
+          <StepForm group={group}>
             <form.AppField name="availability.isAvailable">
               {(field) => <field.SwitchField label="Produkt jest dostępny" />}
             </form.AppField>

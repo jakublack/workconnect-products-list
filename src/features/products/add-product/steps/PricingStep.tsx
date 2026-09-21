@@ -40,11 +40,11 @@ export const PricingStep = withForm({
     return (
       <form.FormGroup
         name="pricing"
-        validators={{ onDynamic: pricingSchema }}
+        validators={{ onChange: pricingSchema }}
         onGroupSubmit={onNext}
       >
         {(group) => (
-          <StepForm onSubmit={group.handleSubmit}>
+          <StepForm group={group}>
             <div className="grid gap-4 sm:grid-cols-2">
               <form.AppField
                 name="pricing.netPrice"
