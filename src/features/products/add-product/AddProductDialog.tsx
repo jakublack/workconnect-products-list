@@ -1,5 +1,6 @@
 import { lazy, Suspense, useState } from 'react'
-import { Loader2Icon, PlusIcon, XIcon } from 'lucide-react'
+import { Loader2Icon, PlusIcon, RotateCwIcon, XIcon } from 'lucide-react'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -53,15 +54,31 @@ export function AddProductDialog({ onProductAdd }: AddProductDialogProps) {
           </DialogClose>
         </DialogHeader>
 
-        <Suspense
+        {/* The chunk can fail to load (offline, or a newer deploy removed it). */}
+        <ErrorBoundary
           fallback={
-            <div className="flex h-72 items-center justify-center text-muted-foreground">
-              <Loader2Icon className="size-5 animate-spin" aria-label="Ładowanie formularza" />
+            <div
+              role="alert"
+              className="flex h-72 flex-col items-center justify-center gap-4 px-4 text-center"
+            >
+              <p className="text-sm text-muted-foreground">Nie udało się wczytać formularza.</p>
+              <Button variant="outline" size="lg" onClick={() => window.location.reload()}>
+                <RotateCwIcon />
+                Odśwież stronę
+              </Button>
             </div>
           }
         >
-          <AddProductForm onProductAdd={onProductAdd} onClose={() => setOpen(false)} />
-        </Suspense>
+          <Suspense
+            fallback={
+              <div className="flex h-72 items-center justify-center text-muted-foreground">
+                <Loader2Icon className="size-5 animate-spin" aria-label="Ładowanie formularza" />
+              </div>
+            }
+          >
+            <AddProductForm onProductAdd={onProductAdd} onClose={() => setOpen(false)} />
+          </Suspense>
+        </ErrorBoundary>
       </DialogContent>
     </Dialog>
   )
