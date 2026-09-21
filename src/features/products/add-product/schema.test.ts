@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { z } from 'zod'
 import {
   availabilitySchema,
@@ -167,6 +167,28 @@ describe('availabilitySchema', () => {
 })
 
 describe('toProduct', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  const parsedForm = () =>
+    productFormSchema.parse({
+      basicInfo: validBasicInfo,
+      pricing: validPricing,
+      availability: validAvailability,
+    })
+
+  it('creates unique ids outside a secure context (no crypto.randomUUID)', () => {
+    // e.g. the dev server opened on a phone via http://192.168.x.x
+    vi.stubGlobal('crypto', { getRandomValues: crypto.getRandomValues.bind(crypto) })
+
+    const first = toProduct(parsedForm())
+    const second = toProduct(parsedForm())
+
+    expect(first.id).toEqual(expect.any(String))
+    expect(first.id).not.toBe(second.id)
+  })
+
   it('maps the parsed form to a product', () => {
     const product = toProduct(
       productFormSchema.parse({

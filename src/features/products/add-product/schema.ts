@@ -111,13 +111,19 @@ export const productFormSchema = z.object({
   availability: availabilitySchema,
 })
 
+/** `crypto.randomUUID` exists only in secure contexts (HTTPS, localhost), e.g. not on a LAN IP. */
+function createProductId(): string {
+  if (typeof crypto.randomUUID === 'function') return crypto.randomUUID()
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`
+}
+
 export function toProduct({
   basicInfo,
   pricing,
   availability,
 }: z.output<typeof productFormSchema>): Product {
   return {
-    id: crypto.randomUUID(),
+    id: createProductId(),
     ...basicInfo,
     ...pricing,
     isAvailable: availability.isAvailable,
