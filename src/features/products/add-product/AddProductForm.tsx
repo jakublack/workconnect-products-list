@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAppForm } from '@/components/form/app-form'
@@ -31,9 +31,13 @@ export interface AddProductFormProps {
  */
 export function AddProductForm({ onProductAdd, onClose }: AddProductFormProps) {
   const [step, setStep] = useState(0)
+  // The dialog stays clickable while it animates out, so a double click could submit twice.
+  const isSavedRef = useRef(false)
   const form = useAppForm({
     ...addProductFormOptions,
     onSubmit: ({ value }) => {
+      if (isSavedRef.current) return
+      isSavedRef.current = true
       // Every step was validated on "Dalej"; parsing the whole form also converts it to output types.
       onProductAdd(toProduct(productFormSchema.parse(value)))
       onClose()

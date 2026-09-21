@@ -210,4 +210,21 @@ describe('AddProductDialog', () => {
     )
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
+
+  it('saves the product only once when the last step is submitted twice', async () => {
+    const { user, onProductAdd } = setup()
+    await openDialog(user)
+    await fillBasicInfo(user)
+    await clickNext(user)
+    await user.type(screen.getByLabelText('Cena netto'), '100')
+    await clickNext(user)
+    const save = screen.getByRole('button', { name: 'Zapisz produkt' })
+
+    // A fast double click submits again while the dialog is still animating out.
+    save.click()
+    save.click()
+
+    await waitFor(() => expect(onProductAdd).toHaveBeenCalled())
+    expect(onProductAdd).toHaveBeenCalledOnce()
+  })
 })
