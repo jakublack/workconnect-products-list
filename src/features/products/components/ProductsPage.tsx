@@ -3,10 +3,13 @@ import { PlusIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { formatProductCount } from '@/lib/format'
 import { MOCK_PRODUCTS } from '../data/mock-products'
+import { usePagination } from '../hooks/use-pagination'
+import { ProductsPagination } from './ProductsPagination'
 import { ProductsTable } from './ProductsTable'
 
 export function ProductsPage() {
   const [products] = useState(MOCK_PRODUCTS)
+  const { page, pageCount, pageItems, setPage } = usePagination(products)
 
   return (
     <main className="mx-auto flex w-full max-w-[1272px] flex-col gap-6 px-4 py-6 md:py-12">
@@ -24,7 +27,13 @@ export function ProductsPage() {
       </header>
 
       <section className="overflow-hidden rounded-lg border bg-card shadow-xs">
-        <ProductsTable products={products} />
+        <ProductsTable products={pageItems} />
+        <ProductsPagination
+          page={page}
+          pageCount={pageCount}
+          totalCount={products.length}
+          onPageChange={setPage}
+        />
       </section>
     </main>
   )
