@@ -25,8 +25,8 @@ describe('netToGross', () => {
   })
 
   it('rounds to full grosze', () => {
-    expect(netToGross(100.5, 23)).toBe(123.62) // 123.615
-    expect(netToGross(0.01, 23)).toBe(0.01) // 0.0123
+    expect(netToGross(100.5, 23)).toBe(123.62)
+    expect(netToGross(0.01, 23)).toBe(0.01)
   })
 
   it('avoids floating point drift', () => {
@@ -43,7 +43,7 @@ describe('grossToNet', () => {
   })
 
   it('rounds to full grosze', () => {
-    expect(grossToNet(246, 8)).toBe(227.78) // 227.777…
+    expect(grossToNet(246, 8)).toBe(227.78)
   })
 })
 

@@ -33,7 +33,6 @@ export function SelectField({
         name={field.name}
         value={field.state.value}
         onValueChange={field.handleChange}
-        // The trigger loses focus to the popup, so treat closing the popup as "blur".
         onOpenChange={(open) => !open && field.handleBlur()}
       >
         <SelectTrigger

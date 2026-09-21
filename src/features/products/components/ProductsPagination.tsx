@@ -27,8 +27,6 @@ export function ProductsPagination({
   const hasPrevious = page > 1
   const hasNext = page < pageCount
 
-  // Links keep a real `href`, so Cmd/Ctrl/Shift+click still opens the page in a new tab/window;
-  // a plain click changes the page client-side.
   const linkProps = (target: number, enabled = true) => ({
     href: enabled ? `?page=${target}` : undefined,
     'aria-disabled': !enabled || undefined,

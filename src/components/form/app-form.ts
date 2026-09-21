@@ -7,7 +7,6 @@ import { TextareaField } from './TextareaField'
 import { TextField } from './TextField'
 import { ToggleChipsField } from './ToggleChipsField'
 
-/** TanStack Form bound to our shadcn/ui field components (`<form.AppField>` → `field.TextField`). */
 export const { useAppForm, withForm } = createFormHook({
   fieldContext,
   formContext,

@@ -9,7 +9,6 @@ import {
   toProduct,
 } from './schema'
 
-/** Maps issues to `{ fieldName: firstMessage }`, which is what the form shows. */
 function fieldErrors(result: z.ZodSafeParseResult<unknown>) {
   const errors: Record<string, string> = {}
   for (const issue of result.error?.issues ?? []) {
@@ -179,7 +178,6 @@ describe('toProduct', () => {
     })
 
   it('creates unique ids outside a secure context (no crypto.randomUUID)', () => {
-    // e.g. the dev server opened on a phone via http://192.168.x.x
     vi.stubGlobal('crypto', { getRandomValues: crypto.getRandomValues.bind(crypto) })
 
     const first = toProduct(parsedForm())

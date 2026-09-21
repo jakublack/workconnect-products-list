@@ -19,7 +19,6 @@ export interface Product {
   vatRate: VatRate
   currency: Currency
   isAvailable: boolean
-  /** Units in stock; `null` when the product is not limited. */
   stock: number | null
   minCartQuantity: number
   maxCartQuantity: number

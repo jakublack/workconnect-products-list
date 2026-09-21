@@ -14,7 +14,6 @@ interface StepperProps {
 
 export function Stepper({ steps, currentStep, className }: StepperProps) {
   return (
-    // Phones: three columns with the circle above the labels; from `sm`: one row with connectors.
     <ol className={cn('grid grid-cols-3 gap-4 sm:flex sm:items-center', className)}>
       {steps.map((step, index) => {
         const isCompleted = index < currentStep

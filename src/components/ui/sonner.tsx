@@ -1,8 +1,6 @@
 import { Toaster as Sonner, type ToasterProps } from 'sonner'
 import { InfoIcon, TriangleAlertIcon, OctagonXIcon, Loader2Icon } from 'lucide-react'
 
-// The app has a single light theme, so there is no `next-themes` provider to read from.
-// Success uses Sonner's built-in filled check icon, which is what the design shows.
 const Toaster = ({ ...props }: ToasterProps) => {
   return (
     <Sonner

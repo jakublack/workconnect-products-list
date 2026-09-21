@@ -8,7 +8,6 @@ interface ProductCardListProps {
   className?: string
 }
 
-/** Mobile counterpart of `ProductsTable`. */
 export function ProductCardList({ products, className }: ProductCardListProps) {
   return (
     <ul className={cn('flex flex-col gap-2', className)}>

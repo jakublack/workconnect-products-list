@@ -28,7 +28,6 @@ export function ProductsPage() {
         <AddProductDialog onProductAdd={handleProductAdd} />
       </header>
 
-      {/* Cards on mobile, a table card from `md` up. */}
       <section className="flex flex-col gap-6 md:gap-0 md:overflow-hidden md:rounded-lg md:border md:bg-card md:shadow-xs">
         <ProductCardList products={pageItems} className="md:hidden" />
         <div className="hidden md:block">

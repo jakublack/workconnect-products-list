@@ -24,7 +24,6 @@ export const basicInfoSchema = z.object({
 const priceSchema = (requiredMessage: string) =>
   z
     .string()
-    // Spaces are thousands separators (`1 299,99`), just like in `parseAmount`.
     .overwrite((value) => value.replace(/\s/g, ''))
     .min(1, { error: requiredMessage, abort: true })
     .regex(AMOUNT_PATTERN, {
@@ -47,7 +46,6 @@ export const pricingSchema = z.object({
 
 const INTEGER_PATTERN = /^\d+$/
 
-// No `abort` here: an aborting issue would skip the cross-field refinements below.
 const quantitySchema = (requiredMessage: string) =>
   z
     .string()
@@ -57,7 +55,6 @@ const quantitySchema = (requiredMessage: string) =>
     .transform(Number)
     .refine((quantity) => quantity >= 1, 'Ilość musi wynosić co najmniej 1')
 
-/** Runs a refinement even if other fields failed, as long as `fields` themselves are valid. */
 const whenValid =
   (...fields: string[]) =>
   (payload: z.core.ParsePayload) =>
@@ -102,7 +99,6 @@ export const availabilitySchema = z
     },
     { when: whenValid('minQuantity', 'maxQuantity') },
   )
-  // The stock only matters for limited products.
   .transform(({ stock, ...rest }) => ({ ...rest, stock: rest.isLimited ? Number(stock) : null }))
 
 export const productFormSchema = z.object({
@@ -111,7 +107,6 @@ export const productFormSchema = z.object({
   availability: availabilitySchema,
 })
 
-/** `crypto.randomUUID` exists only in secure contexts (HTTPS, localhost), e.g. not on a LAN IP. */
 function createProductId(): string {
   if (typeof crypto.randomUUID === 'function') return crypto.randomUUID()
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`
@@ -133,10 +128,6 @@ export function toProduct({
   }
 }
 
-/**
- * Raw form state. Each step is a nested group validated by its own schema,
- * selects start empty, so they are plain strings until validated.
- */
 export interface AddProductFormValues {
   basicInfo: {
     name: string

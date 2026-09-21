@@ -26,13 +26,8 @@ export interface AddProductFormProps {
   onClose: () => void
 }
 
-/**
- * Stepper, steps and footer of the "add product" dialog. It lives inside `DialogContent`,
- * which unmounts on close, so closing always starts the next attempt from an empty step 1.
- */
 export function AddProductForm({ onProductAdd, onClose }: AddProductFormProps) {
   const [step, setStep] = useState(0)
-  // The dialog stays clickable while it animates out, so a double click could submit twice.
   const isSavedRef = useRef(false)
   const lastEditedPriceRef = useRef<PriceSource>('net')
   const form = useAppForm({
@@ -40,7 +35,6 @@ export function AddProductForm({ onProductAdd, onClose }: AddProductFormProps) {
     onSubmit: ({ value }) => {
       if (isSavedRef.current) return
       isSavedRef.current = true
-      // Every step was validated on "Dalej"; parsing the whole form also converts it to output types.
       onProductAdd(toProduct(productFormSchema.parse(value)))
       onClose()
       toast.success('Produkt został dodany')

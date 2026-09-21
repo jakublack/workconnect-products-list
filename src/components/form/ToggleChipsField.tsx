@@ -8,7 +8,6 @@ interface ToggleChipsFieldProps {
   className?: string
 }
 
-/** Multi-select rendered as a row of toggleable chips. */
 export function ToggleChipsField({ label, options, className }: ToggleChipsFieldProps) {
   const field = useFieldContext<string[]>()
   const { isInvalid, errors, errorId, describedBy } = useFieldErrorState()

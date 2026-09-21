@@ -12,7 +12,6 @@ export const PricingStep = withForm({
   ...addProductFormOptions,
   props: {} as {
     onNext: () => void
-    /** Kept by the parent, so it survives leaving and re-entering this step. */
     lastEditedPriceRef: RefObject<PriceSource>
   },
   render: function PricingStep({ form, onNext, lastEditedPriceRef }) {
@@ -25,7 +24,6 @@ export const PricingStep = withForm({
       const amount = parseAmount(form.getFieldValue(from))
 
       form.setFieldValue(to, amount === null ? '' : formatAmount(convert(amount, vatRate)), {
-        // Don't bounce back into the other field's listener, and don't mark it as touched.
         dontRunListeners: true,
         dontUpdateMeta: true,
       })
@@ -63,7 +61,6 @@ export const PricingStep = withForm({
               </form.AppField>
               <form.AppField
                 name="pricing.vatRate"
-                // The price the user typed last stays as is; a VAT change recalculates the other one.
                 listeners={{ onChange: () => syncPrices(lastEditedPriceRef.current) }}
               >
                 {(field) => (

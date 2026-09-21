@@ -6,7 +6,6 @@ afterEach(() => {
   cleanup()
 })
 
-// jsdom lacks a few browser APIs that Radix primitives (Select, Switch) rely on.
 class ResizeObserverStub {
   observe() {}
   unobserve() {}

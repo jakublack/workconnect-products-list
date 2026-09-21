@@ -15,7 +15,6 @@ const currentStep = () =>
 
 async function openDialog(user: UserEvent) {
   await user.click(screen.getByRole('button', { name: 'Dodaj produkt' }))
-  // The form is lazy-loaded when the dialog opens.
   await screen.findByLabelText('Nazwa produktu')
 }
 
@@ -66,7 +65,6 @@ describe('AddProductDialog', () => {
     expect(screen.getByRole('toolbar', { name: 'Cechy produktu' })).toHaveAccessibleDescription(
       'Wybierz co najmniej jedną cechę',
     )
-    // Valid fields have no description.
     expect(screen.getByLabelText('Opis')).not.toHaveAccessibleDescription()
   })
 
@@ -82,7 +80,6 @@ describe('AddProductDialog', () => {
     expect(screen.getByText('Nazwa musi mieć co najmniej 3 znaki')).toBeInTheDocument()
     expect(name).toHaveAttribute('aria-invalid', 'true')
 
-    // Once shown, the error goes away as soon as the value is fixed.
     await user.type(name, 'c')
     expect(screen.queryByText('Nazwa musi mieć co najmniej 3 znaki')).not.toBeInTheDocument()
   })
@@ -103,7 +100,6 @@ describe('AddProductDialog', () => {
     await openDialog(user)
     await user.type(screen.getByLabelText('Nazwa produktu'), 'Dell XPS 13')
 
-    // Moving to SKU blurs the name field, which validates the whole step.
     await user.type(screen.getByLabelText('SKU produktu'), 'D-')
 
     expect(screen.getByLabelText('SKU produktu')).not.toHaveAttribute('aria-invalid', 'true')
@@ -160,7 +156,6 @@ describe('AddProductDialog', () => {
     await user.type(gross, '216')
     expect(net).toHaveValue('200.00')
 
-    // The gross price was edited last, so a VAT change now recalculates the net price.
     await selectOption(user, 'Stawka VAT', '0%')
     expect(gross).toHaveValue('216')
     expect(net).toHaveValue('216.00')
@@ -254,7 +249,6 @@ describe('AddProductDialog', () => {
     await clickNext(user)
     const save = screen.getByRole('button', { name: 'Zapisz produkt' })
 
-    // A fast double click submits again while the dialog is still animating out.
     save.click()
     save.click()
 
