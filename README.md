@@ -47,7 +47,7 @@ The app runs at http://localhost:5173.
 
 - A table on desktop and cards on mobile (below 768 px), with 5 mock products to start with.
 - Columns: name, SKU, category, gross price with currency, availability, stock ("—" for products without a stock limit).
-- Pagination with 5 products per page. The page number lives in `?page=` (nuqs), so a refresh keeps the view and the browser's back button returns to the previous page. An out-of-range page (e.g. `?page=9`) is corrected without adding a history entry.
+- Pagination with 5 products per page. The page number lives in `?page=` (nuqs) and the products are saved in `localStorage`, so a refresh keeps the view, including added products. The browser's back button returns to the previous page, and an out-of-range page (e.g. `?page=9`) is corrected without adding a history entry.
 
 **Form in a dialog**
 
@@ -102,7 +102,7 @@ src/
 ## Decisions and assumptions
 
 - **5 products to start with.** The spec asks for 5 products, while the design shows "7 produktów w katalogu". I followed the spec, so a second page appears once a sixth product is added.
-- **In-memory data.** The spec doesn't require persistence, so a refresh brings back the mock data. If the page from the URL no longer exists, the page number is corrected.
+- **Products in `localStorage`.** Without it, a refresh would drop added products and the page they are on, so "a refresh keeps the view" couldn't hold. Stored data is validated with a Zod schema (the `Product` type is inferred from it); if it's missing, broken or outdated, the app starts from the mock products. To start over, clear the site data in the browser.
 - **"Opis" field.** In Figma the textarea is labelled "Nazwa produktu" (a copy-paste slip), so the app labels it "Opis".
 - **VAT rate** is a select with a chevron, as the spec requires, although in Figma it looks like a plain input.
 - **Selected product features** are highlighted with the primary color. The design doesn't show a selected state.
