@@ -24,7 +24,8 @@ export const basicInfoSchema = z.object({
 const priceSchema = (requiredMessage: string) =>
   z
     .string()
-    .trim()
+    // Spaces are thousands separators (`1 299,99`), just like in `parseAmount`.
+    .overwrite((value) => value.replace(/\s/g, ''))
     .min(1, { error: requiredMessage, abort: true })
     .regex(AMOUNT_PATTERN, {
       error: 'Podaj kwotę, np. 99,99 (maks. 2 miejsca po przecinku)',

@@ -84,6 +84,16 @@ describe('pricingSchema', () => {
     })
   })
 
+  it('accepts spaces as thousands separators, like the price sync does', () => {
+    const result = pricingSchema.parse({
+      ...validPricing,
+      netPrice: '1 299,99',
+      grossPrice: '1\u00a0598.99',
+    })
+    expect(result.netPrice).toBe(1299.99)
+    expect(result.grossPrice).toBe(1598.99)
+  })
+
   it('requires positive amounts with at most 2 decimals', () => {
     expect(fieldErrors(pricingSchema.safeParse({ ...validPricing, netPrice: '' }))).toEqual({
       netPrice: 'Podaj cenę netto',
