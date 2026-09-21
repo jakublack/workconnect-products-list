@@ -39,7 +39,7 @@ export function ProductsPagination({
   })
 
   return (
-    <div className="flex h-16 items-center justify-between gap-4 border-t bg-muted/50 px-4">
+    <div className="flex flex-col items-center gap-4 md:h-16 md:flex-row md:justify-between md:border-t md:bg-muted/50 md:px-4">
       <p className="text-xs text-muted-foreground">
         Strona {page} z {pageCount} · {formatProductCount(totalCount)}
       </p>
