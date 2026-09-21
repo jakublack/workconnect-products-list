@@ -13,8 +13,9 @@ export function StepForm({ onSubmit, children }: StepFormProps) {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     await onSubmit()
-    // If the step stayed invalid, move focus to the first field with an error.
-    requestAnimationFrame(() => {
+    // If the step stayed invalid, move focus to the first field with an error
+    // (in a macrotask, so React has already rendered the error state).
+    setTimeout(() => {
       const invalid = formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]')
       const focusTarget = invalid?.querySelector<HTMLElement>('button') ?? invalid
       focusTarget?.focus()

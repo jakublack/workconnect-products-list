@@ -16,6 +16,7 @@ import { addProductFormOptions, STEP_FORM_ID } from './form-options'
 import { StepForm } from './StepForm'
 import { Stepper } from './Stepper'
 import { BasicInfoStep } from './steps/BasicInfoStep'
+import { PricingStep } from './steps/PricingStep'
 
 const STEPS = [
   { title: 'Informacje', description: 'Dane podstawowe' },
@@ -68,7 +69,7 @@ export function AddProductDialog() {
 
         <div className="px-4 py-5">
           {step === 0 && <BasicInfoStep form={form} onNext={goToNextStep} />}
-          {step === 1 && <StepForm onSubmit={goToNextStep} />}
+          {step === 1 && <PricingStep form={form} onNext={goToNextStep} />}
           {step === 2 && <StepForm onSubmit={() => {}} />}
         </div>
 
