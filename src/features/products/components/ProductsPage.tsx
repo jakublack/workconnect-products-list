@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { PlusIcon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { formatProductCount } from '@/lib/format'
+import { AddProductDialog } from '../add-product/AddProductDialog'
 import { MOCK_PRODUCTS } from '../data/mock-products'
 import { usePagination } from '../hooks/use-pagination'
 import { ProductCardList } from './ProductCardList'
@@ -21,10 +20,7 @@ export function ProductsPage() {
             {formatProductCount(products.length)} w katalogu
           </p>
         </div>
-        <Button size="lg">
-          <PlusIcon />
-          Dodaj produkt
-        </Button>
+        <AddProductDialog />
       </header>
 
       {/* Cards on mobile, a table card from `md` up. */}
