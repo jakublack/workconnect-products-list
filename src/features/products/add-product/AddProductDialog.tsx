@@ -13,8 +13,8 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { addProductFormOptions, STEP_FORM_ID } from './form-options'
-import { StepForm } from './StepForm'
 import { Stepper } from './Stepper'
+import { AvailabilityStep } from './steps/AvailabilityStep'
 import { BasicInfoStep } from './steps/BasicInfoStep'
 import { PricingStep } from './steps/PricingStep'
 
@@ -70,7 +70,7 @@ export function AddProductDialog() {
         <div className="px-4 py-5">
           {step === 0 && <BasicInfoStep form={form} onNext={goToNextStep} />}
           {step === 1 && <PricingStep form={form} onNext={goToNextStep} />}
-          {step === 2 && <StepForm onSubmit={() => {}} />}
+          {step === 2 && <AvailabilityStep form={form} onSubmit={() => form.handleSubmit()} />}
         </div>
 
         <DialogFooter className="mx-0 mb-0 flex-row">

@@ -44,6 +44,66 @@ export const pricingSchema = z.object({
   currency: z.enum(CURRENCIES, 'Wybierz walutę'),
 })
 
+const INTEGER_PATTERN = /^\d+$/
+
+// No `abort` here: an aborting issue would skip the cross-field refinements below.
+const quantitySchema = (requiredMessage: string) =>
+  z
+    .string()
+    .trim()
+    .min(1, requiredMessage)
+    .regex(INTEGER_PATTERN, 'Podaj liczbę całkowitą')
+    .transform(Number)
+    .refine((quantity) => quantity >= 1, 'Ilość musi wynosić co najmniej 1')
+
+/** Runs a refinement even if other fields failed, as long as `fields` themselves are valid. */
+const whenValid =
+  (...fields: string[]) =>
+  (payload: z.core.ParsePayload) =>
+    payload.issues.every((issue) => !fields.includes(String(issue.path?.[0])))
+
+export const availabilitySchema = z
+  .object({
+    isAvailable: z.boolean(),
+    isLimited: z.boolean(),
+    stock: z.string().trim(),
+    minQuantity: quantitySchema('Podaj minimalną ilość'),
+    maxQuantity: quantitySchema('Podaj maksymalną ilość'),
+  })
+  .superRefine(
+    ({ isLimited, stock }, ctx) => {
+      if (!isLimited) return
+      if (stock === '') {
+        ctx.addIssue({ code: 'custom', path: ['stock'], message: 'Podaj ilość na magazynie' })
+      } else if (!INTEGER_PATTERN.test(stock)) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['stock'],
+          message: 'Ilość musi być nieujemną liczbą całkowitą',
+        })
+      }
+    },
+    { when: whenValid('isLimited', 'stock') },
+  )
+  .superRefine(
+    ({ minQuantity, maxQuantity }, ctx) => {
+      if (minQuantity <= maxQuantity) return
+      ctx.addIssue({
+        code: 'custom',
+        path: ['minQuantity'],
+        message: 'Nie może być większa niż maksymalna',
+      })
+      ctx.addIssue({
+        code: 'custom',
+        path: ['maxQuantity'],
+        message: 'Nie może być mniejsza niż minimalna',
+      })
+    },
+    { when: whenValid('minQuantity', 'maxQuantity') },
+  )
+  // The stock only matters for limited products.
+  .transform(({ stock, ...rest }) => ({ ...rest, stock: rest.isLimited ? Number(stock) : null }))
+
 /**
  * Raw form state. Each step is a nested group validated by its own schema,
  * selects start empty, so they are plain strings until validated.
@@ -63,6 +123,13 @@ export interface AddProductFormValues {
     vatRate: string
     currency: string
   }
+  availability: {
+    isAvailable: boolean
+    isLimited: boolean
+    stock: string
+    minQuantity: string
+    maxQuantity: string
+  }
 }
 
 export const DEFAULT_VALUES: AddProductFormValues = {
@@ -79,5 +146,12 @@ export const DEFAULT_VALUES: AddProductFormValues = {
     grossPrice: '',
     vatRate: '23',
     currency: 'PLN',
+  },
+  availability: {
+    isAvailable: true,
+    isLimited: false,
+    stock: '',
+    minQuantity: '1',
+    maxQuantity: '10',
   },
 }
