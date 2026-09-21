@@ -1,3 +1,6 @@
+/** The price the user typed; the other one is calculated from it. */
+export type PriceSource = 'net' | 'gross'
+
 /** Positive amount with up to 2 decimals; both `12.5` and `12,5` are accepted. */
 export const AMOUNT_PATTERN = /^\d+([.,]\d{1,2})?$/
 

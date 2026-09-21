@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { DialogFooter } from '@/components/ui/dialog'
 import type { Product } from '../types'
 import { addProductFormOptions, STEP_FORM_ID } from './form-options'
+import type { PriceSource } from './pricing'
 import { productFormSchema, toProduct } from './schema'
 import { Stepper } from './Stepper'
 import { AvailabilityStep } from './steps/AvailabilityStep'
@@ -33,6 +34,7 @@ export function AddProductForm({ onProductAdd, onClose }: AddProductFormProps) {
   const [step, setStep] = useState(0)
   // The dialog stays clickable while it animates out, so a double click could submit twice.
   const isSavedRef = useRef(false)
+  const lastEditedPriceRef = useRef<PriceSource>('net')
   const form = useAppForm({
     ...addProductFormOptions,
     onSubmit: ({ value }) => {
@@ -57,7 +59,9 @@ export function AddProductForm({ onProductAdd, onClose }: AddProductFormProps) {
 
       <div className="flex-1 overflow-y-auto px-4 py-5">
         {step === 0 && <BasicInfoStep form={form} onNext={goToNextStep} />}
-        {step === 1 && <PricingStep form={form} onNext={goToNextStep} />}
+        {step === 1 && (
+          <PricingStep form={form} onNext={goToNextStep} lastEditedPriceRef={lastEditedPriceRef} />
+        )}
         {step === 2 && <AvailabilityStep form={form} onSubmit={() => form.handleSubmit()} />}
       </div>
 

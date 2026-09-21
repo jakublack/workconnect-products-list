@@ -147,6 +147,21 @@ describe('AddProductDialog', () => {
     expect(net).toHaveValue('216.00')
   })
 
+  it('remembers the last edited price after leaving the pricing step', async () => {
+    const { user } = setup()
+    await openDialog(user)
+    await fillBasicInfo(user)
+    await clickNext(user)
+    await user.type(screen.getByLabelText('Cena brutto'), '246')
+    await clickNext(user)
+
+    await user.click(screen.getByRole('button', { name: 'Wstecz' }))
+    await selectOption(user, 'Stawka VAT', '8%')
+
+    expect(screen.getByLabelText('Cena brutto')).toHaveValue('246')
+    expect(screen.getByLabelText('Cena netto')).toHaveValue('227.78')
+  })
+
   it('goes back to an empty step 1 after closing', async () => {
     const { user } = setup()
     await openDialog(user)
