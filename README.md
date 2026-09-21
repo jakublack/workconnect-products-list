@@ -1,6 +1,6 @@
 # Products — multi-step "add product" form
 
-WorkConnect recruitment task (Frontend, React). A products page with a table and a three-step "Dodaj produkt" form in a dialog, built after the Figma design (desktop and mobile). The UI is in Polish, as in the design.
+A products page with a table and a three-step "Dodaj produkt" form in a dialog, built after the Figma design (desktop and mobile). The UI is in Polish, as in the design.
 
 **Live demo:** https://splendid-sunburst-1e362c.netlify.app
 
